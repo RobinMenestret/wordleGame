@@ -1,0 +1,47 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Vite.js build output
+/dist
+/.vite
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# PostgreSQL
+pgdata/
+*.sql
+*.db
+
+# IDEs and Editors
+.idea/
+.vscode/
+
+# Miscellaneous
+*.sublime-workspace
+*.sublime-project
+
+# Test coverage
+coverage/
+
+# Build artifacts
+*.tgz
+*.tar.gz
+
+# Temporary files
+*.bak
+*.swp

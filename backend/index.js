@@ -1,0 +1,29 @@
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/user', require('./routes/user'));
+app.use('/api/game', require('./routes/game'));
+
+// Route de test pour vérifier que le serveur répond
+app.get('/test', (req, res) => {
+  console.log("le test de connexion au serveur fonctionne.");
+  res.status(200).json({ message: 'Le serveur répond correctement !' });
+});
+
+// Démarrage du serveur
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
