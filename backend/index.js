@@ -16,6 +16,8 @@ app.use(bodyParser.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));
 app.use('/api/game', require('./routes/game'));
+app.use('/api/word', require('./routes/word'));
+
 
 // Route de test pour vérifier que le serveur répond
 app.get('/test', (req, res) => {
