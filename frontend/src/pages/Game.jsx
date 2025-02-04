@@ -1,34 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import './Game.css';
 
-function Game() {
-  const [guesses, setGuesses] = useState([]);
-  const [word, setWord] = useState('');
+const Game = () => {
+  const [grid, setGrid] = useState(Array(6).fill(Array(5).fill('')));
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Définir un mot aléatoire pour ce jeu
-    setWord('react');  // Exemple statique, à remplacer par une logique de mot aléatoire ou une API
-  }, []);
+  const handleChange = (e, rowIndex, colIndex) => {
+    const value = e.target.value.toUpperCase();
+    const newGrid = grid.map((row, rIdx) => 
+      row.map((cell, cIdx) => (rIdx === rowIndex && cIdx === colIndex ? value : cell))
+    );
+    setGrid(newGrid);
 
-  const handleGuess = (guess) => {
-    setGuesses([...guesses, guess]);
+    if (value && colIndex < 4) {
+      document.getElementById(`cell-${rowIndex}-${colIndex + 1}`).focus();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      const firstRow = grid[0];
+      if (firstRow.every(cell => cell !== '')) {
+        const word = firstRow.join('');
+        sendWord(word);
+        setError('');
+      } else {
+        setError('All cells in the first row must be filled.');
+      }
+    }
+  };
+
+  const sendWord = async (word) => {
+    try {
+      const response = await fetch('/api/submit-word', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ word }),
+      });
+      const data = await response.json();
+      console.log('Word submitted:', data);
+    } catch (error) {
+      console.error('Error submitting word:', error);
+    }
   };
 
   return (
-    <div className="game">
+    <div className="game" onKeyDown={handleKeyDown} tabIndex="0">
       <h2>Play Game</h2>
-      <div>
-        <input type="text" maxLength="5" className="input" />
-        <button onClick={() => handleGuess('guess')}>Guess</button>
-      </div>
-      <div>
-        {guesses.map((guess, index) => (
-          <div key={index} className="guess">
-            <p>{guess}</p>
-          </div>
-        ))}
-      </div>
+      {error && <p className="error">{error}</p>}
+      <table>
+        <tbody>
+          {grid.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, colIndex) => (
+                <td key={colIndex}>
+                  <input
+                    id={`cell-${rowIndex}-${colIndex}`}
+                    type="text"
+                    maxLength="1"
+                    value={cell}
+                    onChange={(e) => handleChange(e, rowIndex, colIndex)}
+                    className="input"
+                  />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
 export default Game;
