@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Game.css';
 
 const Game = () => {
@@ -22,7 +23,7 @@ const Game = () => {
       const firstRow = grid[0];
       if (firstRow.every(cell => cell !== '')) {
         const word = firstRow.join('');
-        sendWord(word);
+        handleCheckWord(word);
         setError('');
       } else {
         setError('All cells in the first row must be filled.');
@@ -30,21 +31,25 @@ const Game = () => {
     }
   };
 
-  const sendWord = async (word) => {
+  const handleCheckWord = async (word) => {
+    console.log(`🔍 Vérification du mot : "${word}"`);
+  
     try {
-      const response = await fetch('/api/submit-word', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ word }),
-      });
-      const data = await response.json();
-      console.log('Word submitted:', data);
+      console.log('📡 Envoi de la requête à l\'API...');
+      const response = await axios.post('http://localhost:4000/api/word/check', { word });
+  
+      console.log('✅ Réponse reçue de l\'API :', response.data);
+  
+      if (response.data.exists) {
+        console.log('✔️ Le mot est valide !');
+      } else {
+        console.log('❌ Le mot n\'est pas dans la liste.');
+      }
     } catch (error) {
-      console.error('Error submitting word:', error);
+      console.error('⚠️ Erreur lors de la requête:', error);
     }
   };
+  
 
   return (
     <div className="game" onKeyDown={handleKeyDown} tabIndex="0">
