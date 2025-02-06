@@ -1,80 +1,31 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import './Game.css';
+import axios from 'axios';
+import Gameboard from '../components/GameBoard';
 
 const Game = () => {
-  const [grid, setGrid] = useState(Array(6).fill(Array(5).fill('')));
-  const [error, setError] = useState('');
 
-  const handleChange = (e, rowIndex, colIndex) => {
-    const value = e.target.value.toUpperCase();
-    const newGrid = grid.map((row, rIdx) => 
-      row.map((cell, cIdx) => (rIdx === rowIndex && cIdx === colIndex ? value : cell))
-    );
-    setGrid(newGrid);
-
-    if (value && colIndex < 4) {
-      document.getElementById(`cell-${rowIndex}-${colIndex + 1}`).focus();
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      const firstRow = grid[0];
-      if (firstRow.every(cell => cell !== '')) {
-        const word = firstRow.join('');
-        handleCheckWord(word);
-        setError('');
-      } else {
-        setError('All cells in the first row must be filled.');
-      }
-    }
-  };
-
-  const handleCheckWord = async (word) => {
-    console.log(`🔍 Vérification du mot : "${word}"`);
-  
+  const saveGame = async (score) => {
+    const token = localStorage.getItem('token'); // Récupérer le token depuis le local storage
     try {
-      console.log('📡 Envoi de la requête à l\'API...');
-      const response = await axios.post('http://localhost:4000/api/word/check', { word });
+      const response = await axios.post('http://localhost:4000/api/game', 
+        { score },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Remplacez par votre token d'authentification
+          }
+        }
+      );
   
-      console.log('✅ Réponse reçue de l\'API :', response.data);
-  
-      if (response.data.exists) {
-        console.log('✔️ Le mot est valide !');
-      } else {
-        console.log('❌ Le mot n\'est pas dans la liste.');
-      }
+      console.log('Game saved:', response.data);
     } catch (error) {
-      console.error('⚠️ Erreur lors de la requête:', error);
+      console.error('Error saving game:', error.response ? error.response.data : error.message);
     }
   };
-  
-
   return (
-    <div className="game" onKeyDown={handleKeyDown} tabIndex="0">
-      <h2>Play Game</h2>
-      {error && <p className="error">{error}</p>}
-      <table>
-        <tbody>
-          {grid.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, colIndex) => (
-                <td key={colIndex}>
-                  <input
-                    id={`cell-${rowIndex}-${colIndex}`}
-                    type="text"
-                    maxLength="1"
-                    value={cell}
-                    onChange={(e) => handleChange(e, rowIndex, colIndex)}
-                    className="input"
-                  />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <Gameboard setScore = {saveGame}/>
     </div>
   );
 };

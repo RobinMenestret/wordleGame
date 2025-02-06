@@ -33,6 +33,7 @@ router.put('/', authenticate, async (req, res) => {
 
   try {
     await db.query('UPDATE users SET username = $1 WHERE id = $2', [username, req.userId]);
+    console.log('Username updated to:', username, 'for user ID:', req.userId);
     res.json({ message: 'Username updated' });
   } catch (error) {
     res.status(500).json({ error: 'Error updating username' });

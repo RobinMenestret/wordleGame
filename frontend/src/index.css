@@ -23,13 +23,6 @@ h1, h2 {
   margin-bottom: 15px;
 }
 
-h1 {
-  font-size: 2.5rem;
-}
-
-h2 {
-  font-size: 2rem;
-}
 
 .settings, .scoreboard {
   background-color: #ffffff;
@@ -50,7 +43,6 @@ label {
 }
 
 input[type="text"], input[type="email"], input[type="password"] {
-  width: 100%;
   padding: 12px;
   font-size: 1rem;
   border: 1px solid #ddd;
@@ -58,6 +50,9 @@ input[type="text"], input[type="email"], input[type="password"] {
   margin-bottom: 20px;
   outline: none;
   transition: border-color 0.3s ease;
+}
+input[type="email"], input[type="password"] {
+  width: 300px;
 }
 
 input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
@@ -74,6 +69,7 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 20px;
+  margin : 10px;
 }
 
 button:hover {
@@ -108,34 +104,6 @@ button + button {
   }
 }
 
-
-
-/* NAVBAR */
-
-.navbar {
-  background-color: #1d4ed8;
-  padding: 10px;
-}
-
-.navbar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.navbar li {
-  display: inline;
-  margin-right: 15px;
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.navbar a:hover {
-  text-decoration: underline;
-}
 
 /* HOME */
 
@@ -235,7 +203,7 @@ button:hover {
   background-color: #2563eb;
 }
 
-/* SETTINGS AND SOCREBOARD */
+/* SETTINGS AND SCOREBOARD */
 
 .settings, .scoreboard {
   padding: 20px;
@@ -264,4 +232,8 @@ button {
 
 button:hover {
   background-color: #2563eb;
+}
+.invalid-login-label {
+  color : red;
+  font-style: italic;
 }

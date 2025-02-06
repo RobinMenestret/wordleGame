@@ -3,11 +3,10 @@ const db = require('../db');
 
 const router = express.Router();
 
-// Vérifier si un mot de 5 lettres est présent dans la base
+// Vérifier si un mot est dans la base (POST)
 router.post('/check', async (req, res) => {
     const { word } = req.body;
 
-    // Vérifier si le mot est bien une chaîne de 5 lettres
     if (!word || typeof word !== 'string' || word.length !== 5) {
         return res.status(400).json({ error: 'Invalid word. Must be a string of exactly 5 letters.' });
     }
@@ -15,10 +14,22 @@ router.post('/check', async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM words WHERE word = $1', [word.toLowerCase()]);
 
+        res.json({ exists: result.rows.length > 0 });
+    } catch (error) {
+        console.error('Database error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Récupérer un mot aléatoire (GET)
+router.get('/random', async (req, res) => {
+    try {
+        const result = await db.query('SELECT word FROM words ORDER BY RANDOM() LIMIT 1');
+
         if (result.rows.length > 0) {
-            res.json({ exists: true });
+            res.json({ word: result.rows[0].word });
         } else {
-            res.json({ exists: false });
+            res.status(404).json({ error: 'No words found in database' });
         }
     } catch (error) {
         console.error('Database error:', error);

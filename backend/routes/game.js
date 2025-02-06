@@ -10,6 +10,7 @@ router.post('/', authenticate, async (req, res) => {
 
   try {
     await db.query('INSERT INTO games (user_id, score) VALUES ($1, $2)', [req.userId, score]);
+    console.log('Game saved with score : ', score);
     res.status(201).json({ message: 'Game saved' });
   } catch (error) {
     res.status(500).json({ error: 'Error saving game' });
