@@ -7,6 +7,7 @@ import Settings from './pages/Settings';
 import Game from './pages/Game';
 import Navbar from './components/Navbar';
 import { UserProvider } from './UserContext';
+import Callback from './pages/Callback';
 
 function App() {
   const [username, setUsername] = React.useState('');
@@ -21,6 +22,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/game" element={<Game />} />
+            <Route path="/callback" element={<Callback />} />
           </Routes>
         </div>
       </Router>

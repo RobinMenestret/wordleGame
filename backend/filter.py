@@ -1,10 +1,19 @@
 import psycopg2
+from dotenv import load_dotenv
+import os
 
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()
+
+# Accéder à la variable d'environnement POSTGRE_MDP
+POSTGRE_MDP = os.getenv('POSTGRE_MDP')
+
+# ...votre code existant...
 # Connexion à la base de données PostgreSQL
 conn = psycopg2.connect(
     dbname="wordle", 
     user="postgres", 
-    password="", 
+    password=POSTGRE_MDP, 
     host="localhost", 
     port="5432"
 )

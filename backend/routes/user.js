@@ -21,8 +21,10 @@ const authenticate = (req, res, next) => {
 router.get('/', authenticate, async (req, res) => {
   try {
     const result = await db.query('SELECT email, username FROM users WHERE id = $1', [req.userId]);
+    console.log('User data fetched:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (error) {
+    console.error('Error fetching user data:', error);
     res.status(500).json({ error: 'Error fetching user data' });
   }
 });

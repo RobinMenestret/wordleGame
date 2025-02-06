@@ -14,6 +14,7 @@ const Settings = () => {
     // Charger les informations de l'utilisateur connecté depuis l'API
     const token = localStorage.getItem('token');
     if (token) {
+      console.log("Someone is logged in");
       axios.get('http://localhost:4000/api/user', {
         headers: {
           Authorization: `Bearer ${token}`,
