@@ -20,7 +20,7 @@ function Register() {
 
   return (
     <div className="register">
-      <h1>Register</h1>
+      <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -29,6 +29,7 @@ function Register() {
           onChange={(e) => setEmail(e.target.value)}
           className="input"
         />
+        <br/>
         <input
           type="text"
           placeholder="Username"
@@ -36,6 +37,7 @@ function Register() {
           onChange={(e) => setUsername(e.target.value)}
           className="input"
         />
+        <br/>
         <input
           type="password"
           placeholder="Password"
@@ -43,6 +45,7 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           className="input"
         />
+        <br/>
         <button type="submit" className="button">Register</button>
       </form>
     </div>

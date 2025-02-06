@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../UserContext';
 
-function Settings() {
+const Settings = () => {
+  const { user, setUser } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [email, setEmail] = useState('');
@@ -18,9 +20,10 @@ function Settings() {
         }
       })
       .then(response => {
-        setUsername(response.data.username);
-        setEmail(response.data.email);
-        setIs2FAEnabled(response.data.is2FAEnabled);
+        setUsername(response.data.username || '');
+        setEmail(response.data.email || '');
+        setIs2FAEnabled(response.data.is2FAEnabled || false);
+        setUser(response.data); // Mettre à jour le contexte utilisateur
       })
       .catch(error => {
         console.error("Error fetching user data", error);
