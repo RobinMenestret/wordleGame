@@ -24,8 +24,8 @@ function Navbar() {
         <li className="navbar-item"><Link to="/">Home</Link></li>
         <li className="navbar-item"><Link to="/game">Play</Link></li>
         {user && <li className="navbar-item"><Link to="/settings">Settings</Link></li>}
-        <li className="navbar-item"><Link to="/login">Sign In</Link></li>
-        <li className="navbar-item"><Link to="/register">Sign Up</Link></li>
+        {!user && <li className="navbar-item"><Link to="/login">Sign In</Link></li>}
+        {!user && <li className="navbar-item"><Link to="/register">Sign Up</Link></li>}
         {user && (
           <li className="navbar-item">
             <div className="navbar-name" onClick={toggleDropdown}>

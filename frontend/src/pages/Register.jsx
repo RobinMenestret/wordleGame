@@ -11,12 +11,15 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:4000/api/auth/register', { email, username, password });
-      navigate('/login');
+      const response = await axios.post('http://localhost:4000/api/auth/register', { email, username, password });
+      localStorage.setItem('token', response.data.token);
+      navigate('/Settings');
     } catch (error) {
       console.error('Registration failed', error);
     }
   };
+
+  const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${process.env.REACT_APP_CLIENT_GOOGLE}&redirect_uri=${process.env.REACT_APP_REDIRECT_GOOGLE}&response_type=code&scope=openid%20email%20profile`;
 
   return (
     <div className="register">
@@ -48,6 +51,7 @@ function Register() {
         <br/>
         <button type="submit" className="button">Register</button>
       </form>
+      <a href={googleAuthUrl} className="button">Connect with Google</a>
     </div>
   );
 }
