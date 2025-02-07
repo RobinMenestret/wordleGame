@@ -9,13 +9,14 @@ const Settings = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
 
   useEffect(() => {
     // Charger les informations de l'utilisateur connecté depuis l'API
     const token = localStorage.getItem('token');
     if (token) {
       console.log("Someone is logged in");
-      axios.get('http://localhost:4000/api/user', {
+      axios.get(API_URL + '/api/user', {
         headers: {
           Authorization: `Bearer ${token}`,
         }
