@@ -8,10 +8,12 @@ function Register() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/register', { email, username, password });
+      const response = await axios.post(API_URL + '/api/auth/register', { email, username, password });
       localStorage.setItem('token', response.data.token);
       navigate('/Settings');
     } catch (error) {

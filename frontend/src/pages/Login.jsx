@@ -7,6 +7,8 @@ function Login() {
   const [password, setPassword] = useState('');
   const [invalidLogin, setInvalidLogin] = useState(false);
   const navigate = useNavigate();
+  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,7 +20,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/api/auth/login', { email, password });
+      const response = await axios.post(API_URL + '/api/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
       navigate('/Settings');
     } catch (error) {

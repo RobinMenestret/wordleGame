@@ -4,11 +4,12 @@ import axios from 'axios';
 import Gameboard from '../components/GameBoard';
 
 const Game = () => {
+  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
 
   const saveGame = async (score) => {
     const token = localStorage.getItem('token'); // Récupérer le token depuis le local storage
     try {
-      const response = await axios.post('http://localhost:4000/api/game', 
+      const response = await axios.post(API_URL + '/api/game', 
         { score },
         {
           headers: {
