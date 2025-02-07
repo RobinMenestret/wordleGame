@@ -16,7 +16,7 @@ const GameBoard = ({ setScore }) => {
 
     const fetchRandomWord = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/word/random`);
+            const response = await axios.get(`${API_URL}/api/word/random`, { withCredentials: true });
 
             console.log("The target word is : ", response.data.word)
 
