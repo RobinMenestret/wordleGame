@@ -8,8 +8,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
-
+  const API_URL = process.env.REACT_APP_API_URL 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

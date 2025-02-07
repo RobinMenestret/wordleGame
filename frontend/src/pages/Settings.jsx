@@ -9,7 +9,7 @@ const Settings = () => {
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL || 'https://wordle-api.onrender.com'; //url de deploiement
+  const API_URL = process.env.REACT_APP_API_URL
 
   useEffect(() => {
     // Charger les informations de l'utilisateur connecté depuis l'API

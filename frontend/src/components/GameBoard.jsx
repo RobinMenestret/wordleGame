@@ -11,10 +11,13 @@ const GameBoard = ({ setScore }) => {
     const [lose, setlose] = useState(false);
     const [win, setWin] = useState(false);
     const [invalidWord, setInvalidWord] = useState(false);
+    const API_URL = process.env.REACT_APP_API_URL 
+    console.log('api url', API_URL)
 
     const fetchRandomWord = async () => {
         try {
-            const response = await axios.get('http://localhost:4000/api/word/random');
+            const response = await axios.get(`${API_URL}/api/word/random`);
+            console.log('url call : ', `${API_URL}/api/word/random`)
             console.log("The target word is : ", response.data.word)
 
             setTargetWord(response.data.word);

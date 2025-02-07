@@ -5,7 +5,7 @@ import axios from "axios";
 const Callback = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-
+    const API_URL = process.env.REACT_APP_API_URL
     useEffect(() => {
         const code = searchParams.get("code");
         if (code) {
@@ -19,7 +19,7 @@ const Callback = () => {
 
     const handleAuth = async (code) => {
         try {
-            const response = await axios.post("http://localhost:4000/api/auth/callback", { code }, {
+            const response = await axios.post(API_URL +"/api/auth/callback", { code }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true, // Si vous utilisez des cookies pour gérer la session
             });
