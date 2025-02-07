@@ -11,10 +11,18 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 
 // Configuration CORS
+const allowedOrigins = ['http://localhost:5173', 'https://wordlegamefront.onrender.com/'];
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  credentials: true, 
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
