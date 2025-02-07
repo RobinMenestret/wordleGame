@@ -38,7 +38,7 @@ const Settings = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:4000/api/user', {
+      await axios.put(API_URL + '/api/user', {
         username,
         is2FAEnabled,
       }, {
@@ -55,7 +55,7 @@ const Settings = () => {
   const handleResetPassword = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:4000/api/user/reset-password', {
+      await axios.post(API_URL + '/api/user/reset-password', {
         email,
       }, {
         headers: {
