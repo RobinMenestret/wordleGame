@@ -83,7 +83,7 @@ const GameBoard = ({ setScore }) => {
 
         try {
             console.log('Envoi de la requête à l\'API...');
-            const response = await axios.post(`${API_URL}/api/word/check`, { word });
+            const response = await axios.post(`${API_URL}/api/word/check`, { word }, { withCredentials: true });
 
             console.log('Réponse reçue de l\'API :', response.data);
 
