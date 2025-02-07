@@ -17,7 +17,7 @@ const GameBoard = ({ setScore }) => {
     const fetchRandomWord = async () => {
         try {
             const response = await axios.get(`${API_URL}/api/word/random`);
-            console.log('url call : ', `${API_URL}/api/word/random`)
+
             console.log("The target word is : ", response.data.word)
 
             setTargetWord(response.data.word);
@@ -83,7 +83,7 @@ const GameBoard = ({ setScore }) => {
 
         try {
             console.log('Envoi de la requête à l\'API...');
-            const response = await axios.post('http://localhost:4000/api/word/check', { word });
+            const response = await axios.post(`${API_URL}/api/word/check`, { word });
 
             console.log('Réponse reçue de l\'API :', response.data);
 
