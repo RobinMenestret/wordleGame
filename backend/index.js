@@ -17,6 +17,7 @@ const corsOptions = {
     console.log("origin : " ,origin)
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
+      console.log("cors policy passed successfully !")
     } else {
       callback(new Error('Not allowed by CORS'));
     }
