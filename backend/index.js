@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 
 // Configuration CORS
-const allowedOrigins = ['http://localhost:5173', 'https://wordlegamefront.onrender.com/', 'https://wordlegame-e6jn.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://wordlegamefront.onrender.com', 'https://wordlegame-e6jn.onrender.com'];
 const corsOptions = {
   origin: (origin, callback) => {
     console.log("origin : " ,origin)
