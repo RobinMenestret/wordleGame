@@ -14,10 +14,8 @@ const PORT = process.env.PORT || 4000;
 const allowedOrigins = ['http://localhost:5173', 'https://wordlegamefront.onrender.com', 'https://wordlegame-e6jn.onrender.com'];
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log("origin : " ,origin)
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
-      console.log("cors policy passed successfully !")
     } else {
       callback(new Error('Not allowed by CORS'));
     }
