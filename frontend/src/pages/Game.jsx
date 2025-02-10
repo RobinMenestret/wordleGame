@@ -8,20 +8,22 @@ const Game = () => {
 
   const saveGame = async (score) => {
     const token = localStorage.getItem('token'); // Récupérer le token depuis le local storage
-    try {
-      const response = await axios.post(API_URL + '/api/game', 
-        { score },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // Remplacez par votre token d'authentification
+    if (token != null) {
+      try {
+        const response = await axios.post(API_URL + '/api/game', 
+          { score },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // Remplacez par votre token d'authentification
+            }
           }
-        }
-      );
-  
-      console.log('Game saved:', response.data);
-    } catch (error) {
-      console.error('Error saving game:', error.response ? error.response.data : error.message);
+        );
+    
+        console.log('Game saved:', response.data);
+      } catch (error) {
+        console.error('Error saving game:', error.response ? error.response.data : error.message);
+      }
     }
   };
   return (

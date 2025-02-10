@@ -6,26 +6,37 @@ import os
 load_dotenv()
 
 # Accéder à la variable d'environnement POSTGRE_MDP
-POSTGRE_MDP = os.getenv('POSTGRE_MDP')
+POSTGRE_MDP = os.getenv('POSTGRE_MDP_ONLINE')
 
-# ...votre code existant...
-# Connexion à la base de données PostgreSQL
+# Connexion à la base de données PostgreSQL online
 conn = psycopg2.connect(
-    dbname="wordle", 
-    user="postgres", 
-    password=POSTGRE_MDP, 
-    host="localhost", 
+    dbname="wordle_gtjb", 
+    user="wordle_gtjb_user", 
+    password="POSTGRE_MDP", 
+    host="dpg-cuj4qhaj1k6c73e1uf7g-a.oregon-postgres.render.com", 
     port="5432"
 )
+
 cursor = conn.cursor()
 
 # Ouvrir le fichier et filtrer les mots de 5 lettres
-with open('words.txt', 'r', encoding= "utf8") as file:
+batch_size = 100  # Taille du lot
+words_batch = []
+
+with open('words_fr.txt', 'r', encoding='utf-8') as file:
     for line in file:
         word = line.strip()
-        if len(word) == 5:  # Vérifier si le mot fait 5 lettres
-            # Insérer le mot dans la table
-            cursor.execute("INSERT INTO words (word) VALUES (%s)", (word.lower(),))
+        if len(word) == 5:
+            words_batch.append((word.lower(),))
+            print(word)
+        # Insérer les mots par lots
+        if len(words_batch) >= batch_size:
+            cursor.executemany("INSERT INTO words (word) VALUES (%s)", words_batch)
+            words_batch = []
+
+# Insérer les mots restants
+if words_batch:
+    cursor.executemany("INSERT INTO words (word) VALUES (%s)", words_batch)
 
 # Commit les changements et fermer la connexion
 conn.commit()

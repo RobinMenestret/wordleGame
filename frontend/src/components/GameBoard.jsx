@@ -153,7 +153,7 @@ const GameBoard = ({ setScore }) => {
                     </tbody>
                 </table>
                 {win ? <div><p className = "win-label">🎉🎉 Win! 🎉🎉</p><p className = "win-label">Your score is {7-count}/6</p></div> : <p></p>}
-                {lose ? <p className = "lose-label">😈😈 Game Over! 😈😈 </p> : <p></p>}
+                {lose ? <p className = "lose-label">😈😈 Game Over! 😈😈 <br/> Le mot recherché était {targetWord.toUpperCase()} </p> : <p></p>}
             </div>
         </div>
     );

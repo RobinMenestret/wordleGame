@@ -21,6 +21,7 @@ router.post('/', authenticate, async (req, res) => {
 router.get('/', authenticate, async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM games WHERE user_id = $1', [req.userId]);
+    console.log("results fetched : ", result.rows);
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching games' });

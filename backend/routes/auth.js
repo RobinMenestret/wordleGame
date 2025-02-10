@@ -5,34 +5,54 @@ const db = require('../db');
 const router = express.Router();
 const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
+const sendEmail = require('../config/sendgrid');
+const crypto = require('crypto');
 
 const client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
 
 // Fonction pour générer le token JWT et envoyer la réponse
 const generateTokenAndRespond = (user, res) => {
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  console.log("Token généré")
   res.json({ token, user });
 };
 
 // Inscription
 router.post('/register', async (req, res) => {
-  console.log("registering user", req.body);
   const { email, username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  console.log("data encoded")
+
   try {
-    const result = await db.query(
-      'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id',
-      [email, username, hashedPassword]
+    // Vérifier si l'utilisateur existe déjà
+    const userExists = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    if (userExists.rows.length > 0) {
+      console.log("Email déjà utilisé")
+      return res.status(400).json({ error: 'Email déjà utilisé' });
+    }
+    console.log("Email disponible")
+    // Hasher le mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Générer un token de confirmation unique
+    const emailToken = crypto.randomBytes(32).toString('hex');
+    console.log("Token généré")
+    // Sauvegarder l'utilisateur avec un statut "non confirmé"
+    await db.query(
+      'INSERT INTO users (email, username, password, email_verified, reset_token) VALUES ($1, $2, $3, $4, $5)',
+      [email, username, hashedPassword, false, emailToken]
     );
-    const user = result.rows[0];
-    generateTokenAndRespond(user, res);
+    console.log("Utilisateur créé")
+    // Envoyer l'email de confirmation
+    const confirmationLink = `${process.env.FRONTEND_URL}/confirm/${emailToken}`;
+    console.log("email envoyé !")
+    await sendEmail(email, 'Confirmez votre compte', 'Cliquez sur le lien pour confirmer votre compte',
+      `<p>Cliquez <a href="${confirmationLink}">ici</a> pour confirmer votre compte.</p>`);
+
+    res.status(201).json({ message: 'Utilisateur créé. Veuillez confirmer votre email.' });
+
   } catch (error) {
-    console.error("PostgreSQL Error : ", error)
-    res.status(500).json({ error: 'Error registering user', details: error.message });
+    res.status(500).json({ error: 'Erreur lors de l\'inscription' });
   }
 });
-
 // Connexion
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
@@ -45,7 +65,15 @@ router.post('/login', async (req, res) => {
       console.log("Invalid credentials")
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    // Si 2FA est activé, envoyer un code par email
+    if (user.two_factor_enabled) {
+      const code2FA = Math.floor(100000 + Math.random() * 900000).toString();
+      await db.query('UPDATE users SET two_factor_code = $1 WHERE email = $2', [code2FA, email]);
 
+      await sendEmail(email, 'Votre code de vérification', `Votre code est : ${code2FA}`, `<p>Votre code est : <b>${code2FA}</b></p>`);
+
+      return res.json({ message: 'Code 2FA envoyé', require2FA: true });
+    }
     generateTokenAndRespond(user, res);
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });
@@ -84,7 +112,7 @@ router.post("/callback", async (req, res) => {
         [email, username, hashedPassword]
       );
       user = insertResult.rows[0];
-    }else{
+    } else {
       console.log("User already exists")
     }
 
@@ -93,6 +121,56 @@ router.post("/callback", async (req, res) => {
   } catch (error) {
     console.error('Error during Google authentication', error);
     res.status(500).json({ error: 'Error during Google authentication' });
+  }
+});
+
+// Route de confirmation d'email
+router.get('/confirm/:token', async (req, res) => {
+  const { token } = req.params;
+  try {
+    // Vérifier si le token existe
+    const result = await db.query('SELECT * FROM users WHERE reset_token = $1', [token]);
+    console.log("Résultat :", result.rows);
+    if (result.rows.length === 0) {
+      console.log("Token invalide ou email déjà vérifié.")
+      res.status(208).json({ message: 'Token invalide ou email déjà vérifié.' });
+    }else{
+      // Mettre à jour l'utilisateur pour confirmer l'email
+      await db.query('UPDATE users SET email_verified = $1, reset_token = NULL WHERE reset_token = $2', [true, token]);
+      console.log("utilisateur mis à jour")
+      // res.status(200).json({ message: 'Email confirmé avec succès !' });
+      let user = result.rows[0];
+      user.email_verified = true;
+      console.log("generateTokenAndRespond")
+      //res.status(201).json({ message: 'email confirmé' });
+      generateTokenAndRespond(user, res);
+    }
+
+  } catch (error) {
+    console.error('Erreur lors de la confirmation de l\'email:', error);
+    res.status(500).json({ error: 'Erreur lors de la confirmation de l\'email' });
+  }
+});
+
+router.post('/verify-2fa', async (req, res) => {
+  const { email, code } = req.body;
+
+  try {
+    const result = await db.query('SELECT * FROM users WHERE email = $1 AND two_factor_code = $2', [email, code]);
+
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: 'Code invalide' });
+    }
+
+    // Générer un token et supprimer le code 2FA
+    await db.query('UPDATE users SET two_factor_code = NULL WHERE email = $1', [email]);
+
+    const token = jwt.sign({ userId: result.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    res.json({ token });
+
+  } catch (error) {
+    res.status(500).json({ error: 'Erreur lors de la vérification du code 2FA' });
   }
 });
 
