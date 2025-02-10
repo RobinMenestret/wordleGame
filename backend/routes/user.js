@@ -20,7 +20,7 @@ const authenticate = (req, res, next) => {
 // Récupérer les informations utilisateur
 router.get('/', authenticate, async (req, res) => {
   try {
-    const result = await db.query('SELECT email, username FROM users WHERE id = $1', [req.userId]);
+    const result = await db.query('SELECT email, username, two_factor_enabled, email_verified FROM users WHERE id = $1', [req.userId]);
     console.log('User data fetched:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (error) {
@@ -29,16 +29,17 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
-// Modifier le nom d'utilisateur
+// Modifier le nom d'utilisateur et l'état du 2FA
 router.put('/', authenticate, async (req, res) => {
-  const { username } = req.body;
+  const { username, is2FAEnabled } = req.body;
 
   try {
-    await db.query('UPDATE users SET username = $1 WHERE id = $2', [username, req.userId]);
-    console.log('Username updated to:', username, 'for user ID:', req.userId);
-    res.json({ message: 'Username updated' });
+    await db.query('UPDATE users SET username = $1, two_factor_enabled = $2 WHERE id = $3', [username, is2FAEnabled, req.userId]);
+    console.log('Username updated to:', username, 'and 2FA status updated to:', is2FAEnabled, 'for user ID:', req.userId);
+    res.json({ message: 'Username and 2FA status updated' });
   } catch (error) {
-    res.status(500).json({ error: 'Error updating username' });
+    console.error('Error updating username and 2FA status:', error);
+    res.status(500).json({ error: 'Error updating username and 2FA status' });
   }
 });
 
