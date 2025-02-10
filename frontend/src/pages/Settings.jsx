@@ -8,6 +8,8 @@ const Settings = () => {
   const [username, setUsername] = useState('');
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [games, setGames] = useState([]); // État pour stocker les jeux
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL
 
@@ -21,15 +23,27 @@ const Settings = () => {
           Authorization: `Bearer ${token}`,
         }
       })
-      .then(response => {
-        setUsername(response.data.username || '');
-        setEmail(response.data.email || '');
-        setIs2FAEnabled(response.data.is2FAEnabled || false);
-        setUser(response.data); // Mettre à jour le contexte utilisateur
-      })
-      .catch(error => {
-        console.error("Error fetching user data", error);
-      });
+        .then(response => {
+          console.log(response.data)
+          setUsername(response.data.username || '');
+          setEmail(response.data.email || '');
+          setIs2FAEnabled(response.data.two_factor_enabled || false);
+          setEmailVerified(response.data.email_verified) 
+          setUser(response.data); // Mettre à jour le userContext
+
+          // Requête pour récupérer les jeux de l'utilisateur
+          return axios.get(API_URL + '/api/game', {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          });
+        })
+        .then(response => {
+          setGames(response.data); // Mettre à jour l'état des jeux
+        })
+        .catch(error => {
+          console.error("Error fetching user data or games", error);
+        });
     } else {
       navigate('/login');
     }
@@ -69,37 +83,63 @@ const Settings = () => {
   };
 
   return (
-    <div className="settings">
-      <h1>Settings</h1>
-      <div>
-        <label htmlFor="username">Username: </label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+    <div>
+      <div className="settings">
+        <h1>Settings</h1>
+        <div>
+          <label htmlFor="username">Username: </label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="email">Email: </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            disabled
+          />
+        </div>
+        <div>
+        {emailVerified ? (
+            <span style={{ color: 'green' }}>✅ Email Verified </span>
+          ) : (
+            <span style={{ color: 'orange' }}>⚠️ Email not Verified </span>
+          )}
+        </div>
+        <div>
+          <label htmlFor="2fa">Enable 2FA: </label>
+          <input
+            type="checkbox"
+            id="2fa"
+            checked={is2FAEnabled}
+            onChange={(e) => setIs2FAEnabled(e.target.checked)}
+          />
+        </div>
+        <button onClick={handleSave}>Save Settings</button>
+        <button onClick={handleResetPassword}>Reset Password</button>
       </div>
       <div>
-        <label htmlFor="email">Email: </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          disabled
-        />
+        <div className="scoreboard">
+          <h2>Statistics</h2>
+          {games.length === 0 ? (
+            <p>No games played yet.</p>
+          ) : (
+            <ul className="game-list">
+              {games.map((game, index) => (
+                <li key={index} className="game-item">
+                  <span className="game-score"><b>Score</b> {game.score}</span>
+                  <span className="game-date"><b>Date:</b> {new Date(game.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-      <div>
-        <label htmlFor="2fa">Enable 2FA: </label>
-        <input
-          type="checkbox"
-          id="2fa"
-          checked={is2FAEnabled}
-          onChange={(e) => setIs2FAEnabled(e.target.checked)}
-        />
-      </div>
-      <button onClick={handleSave}>Save Settings</button>
-      <button onClick={handleResetPassword}>Reset Password</button>
     </div>
   );
 }

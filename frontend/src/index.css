@@ -210,6 +210,7 @@ button:hover {
   text-align: center;
 }
 
+
 .settings label, .scoreboard p {
   display: block;
   margin: 10px 0;
@@ -235,5 +236,38 @@ button:hover {
 }
 .invalid-login-label {
   color : red;
+  font-style: italic;
+}
+.scoreboard {
+  margin-top: 40px;
+}
+
+.scoreboard h2 {
+  margin-bottom: 20px;
+}
+
+.game-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.game-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-id,
+.game-score,
+.game-date {
+  margin-right: 10px;
+}
+
+.invalid-login-label {
+  color : orange;
   font-style: italic;
 }

@@ -8,6 +8,7 @@ import Game from './pages/Game';
 import Navbar from './components/Navbar';
 import { UserProvider } from './UserContext';
 import Callback from './pages/Callback';
+import EmailConfirmation from './pages/EmailConfirmation';
 
 function App() {
   const [username, setUsername] = React.useState('');
@@ -23,6 +24,7 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/game" element={<Game />} />
             <Route path="/callback" element={<Callback />} />
+            <Route path="/confirm/:token" element={<EmailConfirmation />} />
           </Routes>
         </div>
       </Router>
