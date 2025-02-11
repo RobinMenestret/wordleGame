@@ -143,7 +143,7 @@ const Settings = () => {
             <ul className="game-list">
               {games.map((game, index) => (
                 <li key={index} className="game-item">
-                  <span className="game-value"><b>Score</b> {game.value}</span>
+                  <span className="game-value"><b>Score</b> {game.score}</span>
                   <span className="game-word"><b>Word :</b> {game.searched_word.toUpperCase()}</span>
                   <span className="game-date"><b>Date:</b> {new Date(game.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                 </li>
