@@ -1,6 +1,6 @@
   .navbar {
     background-color: #1d4ed8;
-    padding: 10px;
+    padding: 0;
   }
   
   .navbar-list {
@@ -9,6 +9,10 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   
   .navbar-item {
@@ -20,7 +24,7 @@
     color: white;
     text-decoration: none;
     display: block;
-    padding: 10px;
+    padding: 20px;
   }
   .navbar-item p {
     color: #1d4ed8;
@@ -37,6 +41,7 @@
     background-color: #ffffff;
     border-radius: 20px;
     cursor: pointer; 
+    margin: 10px;
   }
   .navbar-name:hover {
     background-color: #d7e1f5;

@@ -8,10 +8,12 @@ const Game = () => {
 
   const saveGame = async (score) => {
     const token = localStorage.getItem('token'); // Récupérer le token depuis le local storage
+    const value = score['value'];
+    const word = score['word'];
     if (token != null) {
       try {
         const response = await axios.post(API_URL + '/api/game', 
-          { score },
+          { value, word }, // Envoyer le score et le mot trouvé
           {
             headers: {
               'Content-Type': 'application/json',

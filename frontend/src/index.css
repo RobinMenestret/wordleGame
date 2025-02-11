@@ -212,15 +212,6 @@ input[type="text"], input[type="email"] {
   margin: 10px 0;
 }
 
-button {
-  padding: 10px 20px;
-  background-color: #1d4ed8;
-  color: white;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
 button:hover {
   background-color: #2563eb;
 }
@@ -252,8 +243,9 @@ button:hover {
 }
 
 .game-id,
-.game-score,
-.game-date {
+.game-value,
+.game-date,
+.game-word {
   margin-right: 10px;
 }
 
