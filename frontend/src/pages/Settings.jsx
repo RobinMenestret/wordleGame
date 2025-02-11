@@ -10,6 +10,7 @@ const Settings = () => {
   const [email, setEmail] = useState('');
   const [emailVerified, setEmailVerified] = useState(false);
   const [games, setGames] = useState([]); // État pour stocker les jeux
+  const [isGoogleAccount, setIsGoogleAccount] = useState(false);
   const navigate = useNavigate();
   const API_URL = process.env.REACT_APP_API_URL;
 
@@ -29,6 +30,7 @@ const Settings = () => {
           setEmail(response.data.email || '');
           setIs2FAEnabled(response.data.two_factor_enabled || false);
           setEmailVerified(response.data.email_verified);
+          setIsGoogleAccount(response.data.is_google_account);
           setUser(response.data); // Mettre à jour le userContext
 
           // Requête pour récupérer les jeux de l'utilisateur
@@ -69,6 +71,24 @@ const Settings = () => {
   const handleResetPassword = () => {
     navigate('/reset-password');
   };
+  const handleDeleteAccount = async () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone. You will lose all your data.')) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(API_URL + '/api/user', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
+        localStorage.removeItem('token');
+        setUser(null);
+        navigate('/register');
+      } catch (error) {
+        console.error('Error deleting account', error);
+        alert('Error deleting account');
+      }
+    }
+  };
 
   return (
     <div className="module">
@@ -83,8 +103,9 @@ const Settings = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <label htmlFor="email">Email: </label>
+        <label htmlFor="email">Email: </label>
+        <div className="email-line">
+          {isGoogleAccount ? <img src={'https://freelogopng.com/images/all_img/1657952440google-logo-png-transparent.png'} style={{ width: '20px', height: '20px' }} />:<></>}
           <input
             type="email"
             id="email"
@@ -92,12 +113,13 @@ const Settings = () => {
             disabled
             style={{ marginLeft: '10px' }}
           />
-          {emailVerified ? (
+          {emailVerified ? ( isGoogleAccount ? (<p></p>):
             <span style={{ color: 'green', marginLeft: '10px' }}>Verified</span>
           ) : (
             <span style={{ color: 'red', marginLeft: '10px' }}>Not Verified</span>
           )}
         </div>
+        {!isGoogleAccount && (
         <div>
           <label htmlFor="2fa">Enable 2FA: </label>
           <input
@@ -107,8 +129,10 @@ const Settings = () => {
             onChange={(e) => setIs2FAEnabled(e.target.checked)}
           />
         </div>
+        )}
         <button onClick={handleSave}>Save Settings</button>
-        <button onClick={handleResetPassword}>Reset Password</button>
+        <button onClick={handleResetPassword} disabled={isGoogleAccount}>Reset Password</button>
+        <button onClick={handleDeleteAccount} style={{ backgroundColor: 'red', marginTop: '20px' }}>Delete Account</button>
       </div>
       <div>
         <div className="scoreboard">

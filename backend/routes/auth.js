@@ -108,8 +108,8 @@ router.post("/callback", async (req, res) => {
       const username = payload.given_name + " " + payload.family_name;
       const hashedPassword = await bcrypt.hash(sub, 10); // Utilisez l'identifiant unique stable comme mot de passe par défaut
       const insertResult = await db.query(
-        'INSERT INTO users (email, username, password, two_factor_enabled, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [email, username, hashedPassword, true, true]
+        'INSERT INTO users (email, username, password, two_factor_enabled, email_verified, is_google_account) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+        [email, username, hashedPassword, true, true, true]
       );
       user = insertResult.rows[0];
     } else {
