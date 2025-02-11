@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 // Middleware pour vérifier le JWT
 const authenticate = (req, res, next) => {
@@ -40,6 +41,34 @@ router.put('/', authenticate, async (req, res) => {
   } catch (error) {
     console.error('Error updating username and 2FA status:', error);
     res.status(500).json({ error: 'Error updating username and 2FA status' });
+  }
+});
+
+// Route pour réinitialiser le mot de passe
+router.post('/reset-password', authenticate, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    // Récupérer l'utilisateur à partir de l'ID utilisateur dans le token
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [req.userId]);
+    const user = result.rows[0];
+
+    // Vérifier si l'ancien mot de passe est correct
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Old password is incorrect' });
+    }
+
+    // Hasher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Mettre à jour le mot de passe de l'utilisateur
+    await db.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, req.userId]);
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Error resetting password' });
   }
 });
 

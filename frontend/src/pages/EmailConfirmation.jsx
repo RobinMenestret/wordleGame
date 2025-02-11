@@ -36,7 +36,7 @@ const EmailConfirmation = () => {
     }, [token, API_URL, navigate]);
 
     return (
-        <div>
+        <div className= "module">
             {token !== "sending-email" ? (
                 <div>
                     <h1>Confirmation d'Email</h1>
