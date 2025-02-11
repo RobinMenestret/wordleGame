@@ -8,8 +8,6 @@ require('dotenv').config();
 const sendEmail = require('../config/sendgrid');
 const crypto = require('crypto');
 
-const client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
-
 // Fonction pour générer le token JWT et envoyer la réponse
 const generateTokenAndRespond = (user, res) => {
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -80,6 +78,8 @@ router.post('/login', async (req, res) => {
   }
 });
 
+const client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, process.env.REDIRECT_URI);
+
 router.post("/callback", async (req, res) => {
   try {
     const code = req.body.code;
@@ -108,8 +108,8 @@ router.post("/callback", async (req, res) => {
       const username = payload.given_name + " " + payload.family_name;
       const hashedPassword = await bcrypt.hash(sub, 10); // Utilisez l'identifiant unique stable comme mot de passe par défaut
       const insertResult = await db.query(
-        'INSERT INTO users (email, username, password) VALUES ($1, $2, $3) RETURNING id',
-        [email, username, hashedPassword]
+        'INSERT INTO users (email, username, password, two_factor_enabled, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        [email, username, hashedPassword, true, true]
       );
       user = insertResult.rows[0];
     } else {
