@@ -72,4 +72,32 @@ router.post('/reset-password', authenticate, async (req, res) => {
   }
 });
 
+// Route pour réinitialiser le mot de passe avec un token
+router.post('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  try {
+    // Récupérer l'utilisateur à partir du token de réinitialisation
+    const result = await db.query('SELECT * FROM users WHERE reset_token = $1 AND reset_token_expiry > $2', [token, Date.now()]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // Hasher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Mettre à jour le mot de passe de l'utilisateur et supprimer le token de réinitialisation
+    await db.query('UPDATE users SET password = $1, reset_token = NULL, reset_token_expiry = NULL WHERE id = $2', [hashedPassword, user.id]);
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password with token:', error);
+    res.status(500).json({ message: 'Error resetting password with token' });
+  }
+});
+
+
 module.exports = router;

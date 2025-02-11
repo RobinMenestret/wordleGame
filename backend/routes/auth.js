@@ -174,4 +174,35 @@ router.post('/verify-2fa', async (req, res) => {
   }
 });
 
+// Route pour gérer la requête de mot de passe oublié
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Vérifiez si l'utilisateur existe déjà
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(404).json({ message: 'Email not found' });
+    }
+
+    // Générer un token de réinitialisation de mot de passe
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // 1 heure
+
+    // Mettre à jour l'utilisateur avec le token de réinitialisation et l'expiration
+    await db.query('UPDATE users SET reset_token = $1, reset_token_expiry = $2 WHERE email = $3', [resetToken, resetTokenExpiry, email]);
+
+    // Envoyer un email avec le lien de réinitialisation de mot de passe
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    await sendEmail(email, 'Password Reset', 'Click the link to reset your password', `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`);
+
+    res.json({ message: 'Password reset link sent to your email (it can take 5min)' });
+  } catch (error) {
+    console.error('Error sending forgot password email:', error);
+    res.status(500).json({ message: 'Error sending forgot password email' });
+  }
+});
+
 module.exports = router;

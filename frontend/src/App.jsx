@@ -33,6 +33,7 @@ const router = createBrowserRouter([
       { path: '/callback', element: <Callback /> },
       { path: '/confirm/:token', element: <EmailConfirmation /> },
       { path: '/reset-password', element: <ResetPassword /> },
+      { path: '/reset-password/:token', element: <ResetPassword /> },
     ],
   },
 ]);

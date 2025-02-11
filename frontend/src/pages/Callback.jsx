@@ -25,10 +25,8 @@ const Callback = () => {
             });
 
             localStorage.setItem('token', response.data.token);
-            navigate('/Settings');
+            navigate('/settings');
 
-            // Redirection vers la page d'accueil ou tableau de bord
-            navigate("/login");
         } catch (error) {
             console.error("Erreur lors de l'authentification :", error);
             navigate("/register"); // Redirige en cas d'échec
