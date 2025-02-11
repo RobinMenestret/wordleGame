@@ -21,7 +21,7 @@ const authenticate = (req, res, next) => {
 // Récupérer les informations utilisateur
 router.get('/', authenticate, async (req, res) => {
   try {
-    const result = await db.query('SELECT email, username, two_factor_enabled, email_verified FROM users WHERE id = $1', [req.userId]);
+    const result = await db.query('SELECT email, username, two_factor_enabled, email_verified, is_google_account FROM users WHERE id = $1', [req.userId]);
     console.log('User data fetched:', result.rows[0]);
     res.json(result.rows[0]);
   } catch (error) {
@@ -99,5 +99,17 @@ router.post('/reset-password/:token', async (req, res) => {
   }
 });
 
+// Route pour supprimer le compte utilisateur
+router.delete('/', authenticate, async (req, res) => {
+  try {
+    // Supprimer l'utilisateur de la base de données
+    await db.query('DELETE FROM users WHERE id = $1', [req.userId]);
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).json({ message: 'Error deleting account' });
+  }
+});
 
 module.exports = router;

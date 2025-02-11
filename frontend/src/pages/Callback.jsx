@@ -29,7 +29,7 @@ const Callback = () => {
 
         } catch (error) {
             console.error("Erreur lors de l'authentification :", error);
-            navigate("/register"); // Redirige en cas d'échec
+            navigate("/settings"); // Redirige en cas d'échec
         }
     };
 
