@@ -6,11 +6,11 @@ const router = express.Router();
 
 // Enregistrer une partie
 router.post('/', authenticate, async (req, res) => {
-  const { score } = req.body;
-
+  const { value, word } = req.body;
+  console.log('Game received with score : ', value, ' and word : ', word);
   try {
-    await db.query('INSERT INTO games (user_id, score) VALUES ($1, $2)', [req.userId, score]);
-    console.log('Game saved with score : ', score);
+    await db.query('INSERT INTO games (user_id, score, searched_word) VALUES ($1, $2, $3)', [req.userId, value, word]);
+    console.log('Game saved with score : ', value, ' and word : ', word);
     res.status(201).json({ message: 'Game saved' });
   } catch (error) {
     res.status(500).json({ error: 'Error saving game' });
