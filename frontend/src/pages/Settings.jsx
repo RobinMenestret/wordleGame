@@ -11,7 +11,7 @@ const Settings = () => {
   const [emailVerified, setEmailVerified] = useState(false);
   const [games, setGames] = useState([]); // État pour stocker les jeux
   const navigate = useNavigate();
-  const API_URL = process.env.REACT_APP_API_URL
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     // Charger les informations de l'utilisateur connecté depuis l'API
@@ -24,11 +24,11 @@ const Settings = () => {
         }
       })
         .then(response => {
-          console.log(response.data)
+          console.log(response.data);
           setUsername(response.data.username || '');
           setEmail(response.data.email || '');
           setIs2FAEnabled(response.data.two_factor_enabled || false);
-          setEmailVerified(response.data.email_verified) 
+          setEmailVerified(response.data.email_verified);
           setUser(response.data); // Mettre à jour le userContext
 
           // Requête pour récupérer les jeux de l'utilisateur
@@ -66,24 +66,12 @@ const Settings = () => {
     }
   };
 
-  const handleResetPassword = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(API_URL + '/api/user/reset-password', {
-        email,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-      alert("Password reset email sent!");
-    } catch (error) {
-      console.error("Error sending password reset email", error);
-    }
+  const handleResetPassword = () => {
+    navigate('/reset-password');
   };
 
   return (
-    <div className = "module">
+    <div className="module">
       <div className="settings">
         <h1>Settings</h1>
         <div>
@@ -95,20 +83,19 @@ const Settings = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <label htmlFor="email">Email: </label>
           <input
             type="email"
             id="email"
             value={email}
             disabled
+            style={{ marginLeft: '10px' }}
           />
-        </div>
-        <div>
-        {emailVerified ? (
-            <span style={{ color: 'green' }}>✅ Email Verified </span>
+          {emailVerified ? (
+            <span style={{ color: 'green', marginLeft: '10px' }}>Verified</span>
           ) : (
-            <span style={{ color: 'orange' }}>⚠️ Email not Verified </span>
+            <span style={{ color: 'red', marginLeft: '10px' }}>Not Verified</span>
           )}
         </div>
         <div>

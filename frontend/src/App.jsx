@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import { UserProvider } from './UserContext';
 import Callback from './pages/Callback';
 import EmailConfirmation from './pages/EmailConfirmation';
+import ResetPassword from './pages/ResetPassword';
 
 const Layout = () => (
   <>
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
       { path: '/game', element: <Game /> },
       { path: '/callback', element: <Callback /> },
       { path: '/confirm/:token', element: <EmailConfirmation /> },
+      { path: '/reset-password', element: <ResetPassword /> },
     ],
   },
 ]);
