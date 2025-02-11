@@ -42,7 +42,7 @@ const GameBoard = ({ setScore }) => {
             document.getElementById(`cell-${count}-${0}`).focus();
         }else if (!win){
             setlose(true);
-            setScore(0)
+            setScore({'value' : 0, 'word' : targetWord})
         }
     }, [count]);
 
@@ -94,7 +94,7 @@ const GameBoard = ({ setScore }) => {
                 newWordCompare[count] = wordCompareResult;
                 if (wordCompareResult.every(cell => cell === 2)) {
                     setWin(true);
-                    setScore(6-count)
+                    setScore({'value' : 6-count, 'word' : targetWord})
                 }
                 setWordCompare(newWordCompare);
                 setCount(count + 1)
