@@ -27,7 +27,7 @@ const Game = () => {
     }
   };
   return (
-    <div>
+    <div className = "module">
       <Gameboard setScore = {saveGame}/>
     </div>
   );

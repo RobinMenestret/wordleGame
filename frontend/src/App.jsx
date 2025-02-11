@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, Outlet } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -10,24 +10,35 @@ import { UserProvider } from './UserContext';
 import Callback from './pages/Callback';
 import EmailConfirmation from './pages/EmailConfirmation';
 
+const Layout = () => (
+  <>
+    <Navbar />
+    <div className="container">
+      <Outlet />
+    </div>
+  </>
+);
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      { path: '/', element: <Home /> },
+      { path: '/login', element: <Login /> },
+      { path: '/register', element: <Register /> },
+      { path: '/settings', element: <Settings /> },
+      { path: '/game', element: <Game /> },
+      { path: '/callback', element: <Callback /> },
+      { path: '/confirm/:token', element: <EmailConfirmation /> },
+    ],
+  },
+]);
+
 function App() {
-  const [username, setUsername] = React.useState('');
   return (
     <UserProvider>
-      <Router>
-        <Navbar username={username} />
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/game" element={<Game />} />
-            <Route path="/callback" element={<Callback />} />
-            <Route path="/confirm/:token" element={<EmailConfirmation />} />
-          </Routes>
-        </div>
-      </Router>
+      <RouterProvider router={router} />
     </UserProvider>
   );
 }

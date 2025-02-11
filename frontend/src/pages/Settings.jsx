@@ -83,7 +83,7 @@ const Settings = () => {
   };
 
   return (
-    <div>
+    <div className = "module">
       <div className="settings">
         <h1>Settings</h1>
         <div>

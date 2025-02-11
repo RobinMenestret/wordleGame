@@ -33,7 +33,7 @@ function Login() {
   };
 
   return (
-    <div className="login">
+    <div className="login module">
       <h1>Sign In</h1>
       <form onSubmit={handleSubmit}>
         { invalidLogin ? <label className='invalid-login-label'>invalid email or password</label> : <p></p>}
