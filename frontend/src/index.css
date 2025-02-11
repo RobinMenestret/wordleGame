@@ -45,13 +45,20 @@ label {
   margin-bottom: 10px;
   display: block;
 }
-
+.forgot-password {
+  font-size: 0.8rem;
+  color: #555;
+  display: block;
+}
+.forgot-password:hover {
+  color: #1d4ed8;
+}
 input[type="text"], input[type="email"], input[type="password"] {
   padding: 12px;
   font-size: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin: 10px;
   outline: none;
   transition: border-color 0.3s ease;
 }
