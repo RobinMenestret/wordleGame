@@ -10,7 +10,6 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_REDIRECT_GOOGLE': JSON.stringify(env.REACT_APP_REDIRECT_GOOGLE),
       'process.env.REACT_APP_API_URL': JSON.stringify(env.REACT_APP_API_URL),
     },
-    plugins: [react()],
-    base: '/'
+    plugins: [react()]
   }
 })
