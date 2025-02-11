@@ -12,7 +12,7 @@ POSTGRE_MDP = os.getenv('POSTGRE_MDP_ONLINE')
 conn = psycopg2.connect(
     dbname="wordle_gtjb", 
     user="wordle_gtjb_user", 
-    password="3huOAVHmORmhJ4GsVXEx3E2jq04Ek8Et", 
+    password="POSTGRE_MDP", 
     host="dpg-cuj4qhaj1k6c73e1uf7g-a.oregon-postgres.render.com", 
     port="5432"
 )
