@@ -23,8 +23,14 @@ router.post('/check', async (req, res) => {
 
 // Récupérer un mot aléatoire (GET)
 router.get('/random', async (req, res) => {
+    const difficulty = req.query.difficulty;
+    let result;
     try {
-        const result = await db.query('SELECT word FROM words ORDER BY RANDOM() LIMIT 1');
+        if (difficulty == 'easy') {
+            result = await db.query('SELECT word FROM easy_words ORDER BY RANDOM() LIMIT 1');
+        }else{
+            result = await db.query('SELECT word FROM words ORDER BY RANDOM() LIMIT 1');
+        }
 
         if (result.rows.length > 0) {
             res.json({ word: result.rows[0].word });

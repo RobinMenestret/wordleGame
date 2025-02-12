@@ -237,3 +237,29 @@ button:hover {
   color : orange;
   font-style: italic;
 }
+
+.difficulty-selector {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.difficulty-selector label {
+  font-size: 1.2rem;
+  color: #333;
+  margin-right: 10px;
+}
+
+.difficulty-selector select {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.difficulty-selector select:focus {
+  border-color: #1d4ed8;
+}

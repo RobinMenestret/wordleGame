@@ -10,10 +10,10 @@ import os
 
 # Connexion à la base de données PostgreSQL online
 conn = psycopg2.connect(
-    dbname="wordle_gtjb", 
-    user="wordle_gtjb_user", 
-    password="POSTGRE_MDP_ONLINE", 
-    host="dpg-cuj4qhaj1k6c73e1uf7g-a.oregon-postgres.render.com", 
+    dbname="wordle", 
+    user="postgres", 
+    password="0d48eBz$", 
+    host="localhost", 
     port="5432"
 )
 
@@ -24,7 +24,7 @@ cursor = conn.cursor()
 batch_size = 100  # Taille du lot
 words_batch = []
 
-with open('complete_fr.txt', 'r', encoding='utf-8') as file:
+with open('easy_fr.txt', 'r', encoding='utf-8') as file:
     i = 0
     for line in file:
         i += 1
@@ -35,12 +35,12 @@ with open('complete_fr.txt', 'r', encoding='utf-8') as file:
             print(word)
         # Insérer les mots par lots
         if len(words_batch) >= batch_size:
-            cursor.executemany("INSERT INTO words (word) VALUES (%s)", words_batch)
+            cursor.executemany("INSERT INTO easy_words (word) VALUES (%s)", words_batch)
             words_batch = []
 
 # Insérer les mots restants
 if words_batch:
-    cursor.executemany("INSERT INTO words (word) VALUES (%s)", words_batch)
+    cursor.executemany("INSERT INTO easy_words (word) VALUES (%s)", words_batch)
 
 # Commit les changements et fermer la connexion
 conn.commit()
