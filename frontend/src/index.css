@@ -120,22 +120,6 @@ button:disabled, .button:disabled {
 }
 
 
-/* HOME */
-
-.home {
-  text-align: center;
-  margin-top: 50px;
-}
-
-.home h1 {
-  font-size: 2em;
-  font-weight: bold;
-}
-
-.home p {
-  font-size: 1.2em;
-}
-
 /* GAME */
 
 .game {
