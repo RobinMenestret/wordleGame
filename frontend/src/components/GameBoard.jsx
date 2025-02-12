@@ -8,6 +8,7 @@ const GameBoard = ({ setScore }) => {
     const [count, setCount] = useState(0);
     const [wordCompare, setWordCompare] = useState(Array(6).fill(Array(5).fill(3)));
     const [targetWord, setTargetWord] = useState('');
+    const [tempDisable, setTempDisable] = useState(false);
     const [lose, setlose] = useState(false);
     const [win, setWin] = useState(false);
     const [invalidWord, setInvalidWord] = useState(false);
@@ -80,11 +81,11 @@ const GameBoard = ({ setScore }) => {
 
     const handleCheckWord = async (word) => {
         console.log(`Vérification du mot : "${word}"`);
-
         try {
             console.log('Envoi de la requête à l\'API...');
+            setTempDisable(true);
             const response = await axios.post(`${API_URL}/api/word/check`, { word }, { withCredentials: true });
-
+            setTempDisable(false);
             console.log('Réponse reçue de l\'API :', response.data);
 
             if (response.data.exists) {
@@ -154,7 +155,7 @@ const GameBoard = ({ setScore }) => {
                                                 maxLength="1"
                                                 value={cell}
                                                 onChange={(e) => handleChange(e, rowIndex, colIndex)}
-                                                disabled={rowIndex !== count || lose || win}
+                                                disabled={rowIndex !== count || lose || win || tempDisable}
                                                 className={`game-input ${wordCompare[rowIndex][colIndex] === 2 ? 'correct' : wordCompare[rowIndex][colIndex] === 1 ? 'misplaced' : wordCompare[rowIndex][colIndex] === 0 ? 'incorrect' : 'unknown'}`}
                                             />
                                         </td>
