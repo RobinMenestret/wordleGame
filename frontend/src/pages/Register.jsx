@@ -52,7 +52,7 @@ function Register() {
           className="input"
         />
         <br/>
-        <button type="submit" className="button">Register</button>
+        <button type="submit" className="button">Sign Up</button>
       </form>
       <a href={googleAuthUrl} className="button">Connect with Google</a>
     </div>
