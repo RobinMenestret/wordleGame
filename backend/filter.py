@@ -1,12 +1,12 @@
 import psycopg2
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import os
 
 # Charger les variables d'environnement depuis le fichier .env
-load_dotenv()
+#load_dotenv()
 
 # Accéder à la variable d'environnement POSTGRE_MDP
-POSTGRE_MDP = os.getenv('POSTGRE_MDP_ONLINE')
+#POSTGRE_MDP = os.getenv('POSTGRE_MDP_ONLINE')
 
 # Connexion à la base de données PostgreSQL online
 conn = psycopg2.connect(
@@ -16,6 +16,7 @@ conn = psycopg2.connect(
     host="dpg-cuj4qhaj1k6c73e1uf7g-a.oregon-postgres.render.com", 
     port="5432"
 )
+
 
 cursor = conn.cursor()
 
