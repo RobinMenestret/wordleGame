@@ -12,20 +12,22 @@ const GameBoard = ({ setScore }) => {
     const [lose, setlose] = useState(false);
     const [win, setWin] = useState(false);
     const [invalidWord, setInvalidWord] = useState(false);
-    const API_URL = process.env.REACT_APP_API_URL
-    console.log('api url', API_URL)
+    const [difficulty, setDifficulty] = useState('easy'); // Ajout de l'état pour la difficulté
+    const API_URL = process.env.REACT_APP_API_URL;
+    console.log('api url', API_URL);
 
     const fetchRandomWord = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/word/random`, { withCredentials: true });
+            const response = await axios.get(`${API_URL}/api/word/random?difficulty=${difficulty}`, { withCredentials: true });
 
-            console.log("The target word is : ", response.data.word)
+            console.log("The target word is : ", response.data.word);
 
             setTargetWord(response.data.word);
         } catch (error) {
             console.error('⚠️ Erreur lors de la récupération du mot:', error);
         }
-    }
+    };
+
     const newGame = () => {
         fetchRandomWord();
         setGrid(Array(6).fill(Array(5).fill('')));
@@ -34,7 +36,8 @@ const GameBoard = ({ setScore }) => {
         setlose(false);
         setWin(false);
         setInvalidWord(false);
-    }
+    };
+
     useEffect(() => {
         if (count === 0) {
             fetchRandomWord();
@@ -43,7 +46,7 @@ const GameBoard = ({ setScore }) => {
             document.getElementById(`cell-${count}-${0}`).focus();
         } else if (!win) {
             setlose(true);
-            setScore({ 'value': 0, 'word': targetWord })
+            setScore({ 'value': 0, 'word': targetWord });
         }
     }, [count]);
 
@@ -95,10 +98,10 @@ const GameBoard = ({ setScore }) => {
                 newWordCompare[count] = wordCompareResult;
                 if (wordCompareResult.every(cell => cell === 2)) {
                     setWin(true);
-                    setScore({ 'value': 6 - count, 'word': targetWord })
+                    setScore({ 'value': 6 - count, 'word': targetWord });
                 }
                 setWordCompare(newWordCompare);
-                setCount(count + 1)
+                setCount(count + 1);
             } else {
                 console.log('❌ Le mot n\'est pas dans la liste.');
                 setInvalidWord(true);
@@ -108,12 +111,12 @@ const GameBoard = ({ setScore }) => {
             console.error('⚠️ Erreur lors de la requête:', error);
         }
     };
+
     const compareWords = (word) => {
         const wordCompare = [3, 3, 3, 3, 3]; // 0 = incorrect, 1 = not in place, 2 = correct
         const targetWordArray = targetWord.split('');
         const wordArray = word.split('');
         for (let i = 0; i < 5; i++) {
-            //console.log(targetWordArray[i], wordArray[i])
             if (targetWordArray[i] === wordArray[i].toLowerCase()) {
                 wordCompare[i] = 2;
             }
@@ -136,39 +139,47 @@ const GameBoard = ({ setScore }) => {
         return wordCompare;
     };
 
-        return (
-            <div>
-                <center>
-                    <button align="center" onClick={newGame}>New Game</button>
-                </center>
-                <div className="game" onKeyDown={handleKeyDown} tabIndex="0">
-                    {error && <p className="error">{error}</p>}
-                    <table width="300px">
-                        <tbody>
-                            {grid.map((row, rowIndex) => (
-                                <tr key={rowIndex} className={invalidWord && rowIndex === count ? 'invalid-row' : ''}>
-                                    {row.map((cell, colIndex) => (
-                                        <td key={colIndex}>
-                                            <input
-                                                id={`cell-${rowIndex}-${colIndex}`}
-                                                type="text"
-                                                maxLength="1"
-                                                value={cell}
-                                                onChange={(e) => handleChange(e, rowIndex, colIndex)}
-                                                disabled={rowIndex !== count || lose || win || tempDisable}
-                                                className={`game-input ${wordCompare[rowIndex][colIndex] === 2 ? 'correct' : wordCompare[rowIndex][colIndex] === 1 ? 'misplaced' : wordCompare[rowIndex][colIndex] === 0 ? 'incorrect' : 'unknown'}`}
-                                            />
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {win ? <div><p className="win-label">🎉🎉 Win! 🎉🎉</p><p className="win-label">Your score is {7 - count}/6</p></div> : <p></p>}
-                    {lose ? <p className="lose-label">😈😈 Game Over! 😈😈 <br /> The target word word was {targetWord.toUpperCase()} </p> : <p></p>}
+    return (
+        <div>
+            <center>
+                <button align="center" onClick={newGame}>New Game</button>
+                <div className="difficulty-selector">
+                    <label>
+                        <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+                            <option value="easy">Easy</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </label>
                 </div>
+            </center>
+            <div className="game" onKeyDown={handleKeyDown} tabIndex="0">
+                {error && <p className="error">{error}</p>}
+                <table width="300px">
+                    <tbody>
+                        {grid.map((row, rowIndex) => (
+                            <tr key={rowIndex} className={invalidWord && rowIndex === count ? 'invalid-row' : ''}>
+                                {row.map((cell, colIndex) => (
+                                    <td key={colIndex}>
+                                        <input
+                                            id={`cell-${rowIndex}-${colIndex}`}
+                                            type="text"
+                                            maxLength="1"
+                                            value={cell}
+                                            onChange={(e) => handleChange(e, rowIndex, colIndex)}
+                                            disabled={rowIndex !== count || lose || win || tempDisable}
+                                            className={`game-input ${wordCompare[rowIndex][colIndex] === 2 ? 'correct' : wordCompare[rowIndex][colIndex] === 1 ? 'misplaced' : wordCompare[rowIndex][colIndex] === 0 ? 'incorrect' : 'unknown'}`}
+                                        />
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {win ? <div><p className="win-label">🎉🎉 Win! 🎉🎉</p><p className="win-label">Your score is {7 - count}/6</p></div> : <p></p>}
+                {lose ? <p className="lose-label">😈😈 Game Over! 😈😈 <br /> The target word word was {targetWord.toUpperCase()} </p> : <p></p>}
             </div>
-        );
-    };
+        </div>
+    );
+};
 
-    export default GameBoard;
+export default GameBoard;
