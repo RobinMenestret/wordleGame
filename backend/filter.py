@@ -12,7 +12,7 @@ POSTGRE_MDP = os.getenv('POSTGRE_MDP_ONLINE')
 conn = psycopg2.connect(
     dbname="wordle_gtjb", 
     user="wordle_gtjb_user", 
-    password="POSTGRE_MDP", 
+    password="POSTGRE_MDP_ONLINE", 
     host="dpg-cuj4qhaj1k6c73e1uf7g-a.oregon-postgres.render.com", 
     port="5432"
 )
@@ -23,8 +23,11 @@ cursor = conn.cursor()
 batch_size = 100  # Taille du lot
 words_batch = []
 
-with open('words_fr.txt', 'r', encoding='utf-8') as file:
+with open('complete_fr.txt', 'r', encoding='utf-8') as file:
+    i = 0
     for line in file:
+        i += 1
+        print(i)
         word = line.strip()
         if len(word) == 5:
             words_batch.append((word.lower(),))
