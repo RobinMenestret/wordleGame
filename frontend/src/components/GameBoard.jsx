@@ -178,8 +178,7 @@ const GameBoard = ({ setScore }) => {
                 {win ? <div><p className="win-label">🎉🎉 Win! 🎉🎉</p><p className="win-label">Your score is {7 - count}/6</p></div> : <p></p>}
                 {lose ? <p className="lose-label">😈😈 Game Over! 😈😈 <br /> The target word word was {targetWord.toUpperCase()} </p> : <p></p>}
             </div>
-        </div>
-    );
-};
+        );
+    };
 
-export default GameBoard;
+    export default GameBoard;
